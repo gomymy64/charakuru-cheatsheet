@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Как я добавил себя в игру: 3D-персонаж из одной картинки (Claude + Tripo) | ИИ Мастодонт</title>
+<!-- seo:start -->
+<meta name="description" content="Как я добавил себя в игру: 3D-персонаж из одной картинки (Claude + Tripo). Скелет, живые волосы и пальто. И игра, где он бегает и рубит монстров.">
+<link rel="canonical" href="https://aimastodont.com/charakuru-cheatsheet/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ИИ Мастодонт">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:title" content="Как я добавил себя в игру: 3D-персонаж из одной картинки (Claude + Tripo)">
+<meta property="og:description" content="Как я добавил себя в игру: 3D-персонаж из одной картинки (Claude + Tripo). Скелет, живые волосы и пальто. И игра, где он бегает и рубит монстров.">
+<meta property="og:url" content="https://aimastodont.com/charakuru-cheatsheet/">
+<meta property="og:image" content="https://aimastodont.com/charakuru-cheatsheet/img/11-igra.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+ {"@type":"Article","headline":"Как я добавил себя в игру: 3D-персонаж из одной картинки (Claude + Tripo)","description":"Как я добавил себя в игру: 3D-персонаж из одной картинки (Claude + Tripo). Скелет, живые волосы и пальто. И игра, где он бегает и рубит монстров.","inLanguage":"ru",
+  "mainEntityOfPage":"https://aimastodont.com/charakuru-cheatsheet/","datePublished":"2026-11-15","dateModified":"2026-11-15",
+  "author":{"@type":"Organization","name":"ИИ Мастодонт","url":"https://aimastodont.com/"},
+  "publisher":{"@type":"Organization","name":"ИИ Мастодонт","url":"https://aimastodont.com/"},
+  "image":"https://aimastodont.com/charakuru-cheatsheet/img/11-igra.jpg"},
+ {"@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"ИИ Мастодонт","item":"https://aimastodont.com/"},
+  {"@type":"ListItem","position":2,"name":"Как я добавил себя в игру: 3D-персонаж из одной картинки (Claude + Tripo)","item":"https://aimastodont.com/charakuru-cheatsheet/"}]}
+]}
+</script>
+<!-- seo:end -->
+<link rel="preload" href="img/11-igra.jpg" as="image" fetchpriority="high">
+<style>
+@font-face{font-family:"Benzin";src:url("fonts/Benzin-Semibold.ttf") format("truetype");font-weight:600;font-display:swap}
+@font-face{font-family:"Benzin";src:url("fonts/Benzin-Bold.ttf") format("truetype");font-weight:700;font-display:swap}
+@font-face{font-family:"Benzin";src:url("fonts/Benzin-ExtraBold.ttf") format("truetype");font-weight:800;font-display:swap}
+@font-face{font-family:"Onest";src:url("fonts/Onest-Regular.ttf") format("truetype");font-weight:400;font-display:swap}
+@font-face{font-family:"Blender";src:url("fonts/BlenderPro-Bold.ttf") format("truetype");font-weight:700;font-display:swap}
+
+/* палитра снята с шапки: неоновая надпись над автоматом и розовая лента под потолком */
+:root{--bg:#05060A;--bg2:#0B0D14;--bg3:#131726;--ink:#ECEFF6;--dim:#9198AD;
+--line:rgba(236,239,246,.09);--line2:rgba(236,239,246,.2);
+--a1:#3FC6FF;--a2:#FF4FA8;--neon:#B4EAFF;
+--pad:clamp(16px,4vw,64px)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--a1) var(--bg2)}
+html::-webkit-scrollbar{width:12px}
+html::-webkit-scrollbar-track{background:var(--bg2)}
+html::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--a1),var(--a2));border-radius:8px;border:3px solid var(--bg2)}
+html::-webkit-scrollbar-thumb:hover{background:var(--a1)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Onest",system-ui,sans-serif;
+font-size:clamp(16px,1.05vw,18px);line-height:1.65;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+/* пятна света на фоне */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+background:radial-gradient(900px 600px at 8% 30%,rgba(63,198,255,.07),transparent 65%),
+radial-gradient(800px 560px at 96% 72%,rgba(255,79,168,.06),transparent 65%)}
+/* шум */
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.025;
+background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E")}
+.wrap{width:min(1080px,100%);margin:0 auto;padding:0 var(--pad);position:relative;z-index:2}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--a1);outline-offset:3px}
+.ico{width:24px;height:24px;flex:none;fill:none;stroke:url(#g);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+
+/* свет за курсором */
+.aura{position:fixed;width:640px;height:640px;left:-999px;top:-999px;pointer-events:none;z-index:1;
+transform:translate(-50%,-50%);
+background:radial-gradient(circle,rgba(63,198,255,.10),rgba(255,79,168,.04) 40%,transparent 64%)}
+/* прогресс чтения */
+.bar{position:fixed;left:0;top:0;height:3px;width:0;z-index:200;
+background:linear-gradient(90deg,var(--a1),var(--a2));box-shadow:0 0 18px rgba(63,198,255,.6)}
+
+nav{position:sticky;top:0;z-index:90;background:rgba(5,6,10,.82);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3)}
+nav::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+background:linear-gradient(90deg,transparent,var(--a1) 30%,var(--a2) 70%,transparent)}
+.nav-in{display:flex;align-items:center;gap:22px;height:64px}
+.brand{font-family:"Benzin";font-weight:800;font-size:clamp(14px,1.3vw,17px);text-transform:uppercase;letter-spacing:.02em;text-decoration:none}
+.nav-links{display:flex;gap:4px;margin-left:auto}
+.nav-links a{font-family:"Blender";font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase;
+color:var(--dim);text-decoration:none;padding:9px 13px;border-radius:3px;transition:color .25s,background .25s}
+.nav-links a:hover{color:var(--ink);background:rgba(236,239,246,.06)}
+@media(max-width:560px){.nav-links a{padding:8px 8px;font-size:12px;letter-spacing:.1em}.nav-in{gap:10px}}
+@media(max-width:400px){.nav-links a:first-child{display:none}}
+
+/* ШАПКА: кадр в родной пропорции 2368x1776, по центру, параллакс 0.06 */
+.hero{position:relative;height:min(75vw,104vh,1075px);overflow:hidden;background:var(--bg);
+border-bottom:1px solid rgba(236,239,246,.14)}
+.hero-frame{position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);
+height:100%;aspect-ratio:2368/1776;max-width:100%;overflow:hidden;
+-webkit-mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent);
+mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent)}
+.hero-img{display:block;width:100%;height:100%;will-change:transform}
+.hero::after{content:"";position:absolute;inset:0;pointer-events:none;
+background:linear-gradient(180deg,rgba(5,6,10,.32) 0%,rgba(5,6,10,0) 9%,rgba(5,6,10,0) 44%,rgba(5,6,10,.55) 62%,rgba(5,6,10,.9) 80%,#05060A 100%)}
+.hero-in{position:absolute;left:0;right:0;bottom:0;z-index:3;width:min(1080px,100%);margin:0 auto;
+padding:0 var(--pad) clamp(40px,5vw,80px)}
+.badge{display:inline-block;font-family:"Blender";font-weight:700;font-size:13px;letter-spacing:.26em;
+text-transform:uppercase;color:var(--a1);border:1px solid rgba(63,198,255,.7);padding:7px 14px 6px;border-radius:2px;
+background:rgba(5,6,10,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+h1{font-family:"Benzin";font-weight:800;text-transform:uppercase;margin:22px 0 0;
+font-size:clamp(30px,3.9vw,58px);line-height:1.02;letter-spacing:-.01em;
+text-shadow:0 6px 40px rgba(0,0,0,.9)}
+h1 em{font-style:normal;color:var(--neon);
+text-shadow:0 0 18px rgba(63,198,255,.9),0 0 46px rgba(63,198,255,.55),0 0 90px rgba(80,150,255,.4),0 4px 22px rgba(0,0,0,.95)}
+h1 .h1-sub{display:block;margin-top:16px;font-weight:600;font-size:clamp(14px,1.45vw,21px);line-height:1.3;
+letter-spacing:.01em;color:var(--ink)}
+.sub{margin:18px 0 0;color:#C5CADA;max-width:52ch;text-shadow:0 2px 16px rgba(0,0,0,.9)}
+.watch{display:inline-flex;align-items:center;gap:11px;margin-top:28px;
+background:linear-gradient(100deg,var(--a1),var(--a2));color:#05060A;
+font-family:"Blender";font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;
+padding:15px 28px 14px;border-radius:3px;text-decoration:none;
+box-shadow:0 12px 34px rgba(63,198,255,.28);transition:transform .22s,box-shadow .22s}
+.watch .ico{stroke:currentColor;width:22px;height:22px}
+.watch:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 18px 46px rgba(255,79,168,.38)}
+/* на узких экранах текст под картинкой, чтобы не лечь на надпись «ИГРОК 1» */
+@media(max-width:980px){
+.hero{height:auto;overflow:visible}
+.hero-frame{position:relative;left:0;transform:none;width:100%;height:auto;max-width:none;
+-webkit-mask-image:linear-gradient(180deg,#000 80%,transparent);mask-image:linear-gradient(180deg,#000 80%,transparent)}
+.hero-img{height:auto;aspect-ratio:2368/1776}
+.hero::after{display:none}
+.hero-in{position:relative;margin-top:clamp(-90px,-9vw,-40px);padding-bottom:48px}
+}
+
+section{padding:clamp(56px,7vw,110px) 0;position:relative;z-index:2}
+h2{font-family:"Benzin";font-weight:700;text-transform:uppercase;margin:0 0 36px;
+font-size:clamp(22px,3vw,42px);line-height:1.05;letter-spacing:-.005em}
+h3{font-family:"Benzin";font-weight:600;text-transform:uppercase;margin:0 0 16px;
+font-size:clamp(17px,1.7vw,24px);line-height:1.18;hyphens:auto}
+
+/* что научишься: карточки с наклоном */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;perspective:1100px}
+.card{background:linear-gradient(160deg,var(--bg3),var(--bg2));border:1px solid var(--line);
+border-radius:8px;padding:30px 26px 28px;position:relative;overflow:hidden;
+transform-style:preserve-3d;transition:transform .3s cubic-bezier(.2,.7,.2,1),border-color .3s,box-shadow .3s}
+.card::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,var(--a1),var(--a2))}
+.card::after{content:"";position:absolute;right:-90px;top:-90px;width:220px;height:220px;pointer-events:none;
+background:radial-gradient(circle,rgba(63,198,255,.12),transparent 68%)}
+.card:hover{border-color:var(--line2);box-shadow:0 24px 54px rgba(0,0,0,.55)}
+.card .ico{width:40px;height:40px;stroke-width:1.5;margin-bottom:20px;display:block}
+.card p{margin:0;color:#C5CADA}
+
+/* инструменты и ссылки */
+.tools{display:grid;gap:11px}
+.tool{display:flex;align-items:center;gap:18px;background:var(--bg2);border:1px solid var(--line);
+border-radius:6px;padding:18px 24px;text-decoration:none;color:inherit;
+position:relative;overflow:hidden;transition:transform .25s,border-color .25s,background .25s}
+.tool::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+background:linear-gradient(180deg,var(--a1),var(--a2));transform:scaleY(0);transition:transform .3s}
+.tool:hover{border-color:var(--line2);transform:translateX(6px);background:var(--bg3)}
+.tool:hover::before{transform:scaleY(1)}
+.tool .txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.tool .nm{font-family:"Blender";font-weight:700;font-size:17px;letter-spacing:.08em;text-transform:uppercase;line-height:1.3}
+.tool .ds{color:var(--dim);font-size:.92em;line-height:1.5}
+.tool .host{color:var(--dim);font-size:.85em;overflow-wrap:anywhere}
+.pill{font-family:"Blender";font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+padding:6px 12px 5px;border-radius:2px;border:1px solid var(--line2);color:var(--dim);white-space:nowrap}
+.pill.free{color:var(--a1);border-color:rgba(63,198,255,.45)}
+.tool .go{width:20px;height:20px;stroke:var(--dim);stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;transition:stroke .25s,transform .25s}
+.tool:hover .go{stroke:var(--a1);transform:translate(2px,-2px)}
+@media(max-width:560px){.tool{flex-wrap:wrap;gap:12px 14px;padding:16px 18px}.tool .txt{flex-basis:calc(100% - 44px)}}
+
+/* ШАГИ: полый номер отдельной колонкой, прилипает */
+.step{display:grid;grid-template-columns:minmax(96px,150px) minmax(0,1fr);gap:clamp(18px,2.6vw,42px);
+background:linear-gradient(155deg,var(--bg3),var(--bg2) 62%);border:1px solid var(--line);
+border-radius:10px;padding:clamp(26px,3.2vw,46px);margin-bottom:18px;position:relative;
+box-shadow:0 26px 60px rgba(0,0,0,.45)}
+.step::before{content:"";position:absolute;inset:0 0 auto;height:3px;border-radius:10px 10px 0 0;
+background:linear-gradient(90deg,var(--a1),var(--a2),transparent)}
+.step::after{content:"";position:absolute;right:0;top:0;width:340px;height:340px;max-width:60%;pointer-events:none;border-radius:0 10px 0 0;
+background:radial-gradient(circle at 100% 0,rgba(255,79,168,.10),transparent 66%)}
+.num{font-family:"Benzin";font-weight:800;font-size:clamp(40px,4vw,72px);line-height:.85;color:transparent;
+-webkit-text-stroke:1.5px rgba(63,198,255,.7);white-space:nowrap;letter-spacing:-.03em;max-width:100%;
+position:sticky;top:100px;align-self:start;justify-self:start}
+.step-body{min-width:0;position:relative;z-index:1}
+@media(max-width:760px){.step{grid-template-columns:1fr;gap:14px}.num{position:static;font-size:44px}}
+.lead{color:#C5CADA;margin:0 0 20px;max-width:64ch}
+.acts{list-style:none;padding:0;margin:0 0 18px}
+.acts li{position:relative;padding-left:24px;margin-bottom:10px;max-width:66ch}
+.acts li::before{content:"";position:absolute;left:2px;top:.62em;width:7px;height:7px;
+background:linear-gradient(135deg,var(--a1),var(--a2));box-shadow:0 0 10px rgba(63,198,255,.5)}
+
+/* промпт */
+.pr{margin:20px 0 22px;background:#07080D;border:1px solid var(--line);border-radius:0 6px 6px 0;position:relative;
+box-shadow:0 18px 46px rgba(0,0,0,.6),0 0 40px rgba(63,198,255,.06),inset 0 1px 0 rgba(255,255,255,.05)}
+.pr::before{content:"";position:absolute;left:-1px;top:-1px;bottom:-1px;width:3px;z-index:1;
+background:linear-gradient(180deg,var(--a1),var(--a2));box-shadow:0 0 14px rgba(63,198,255,.45)}
+.pr-top{display:flex;align-items:center;gap:14px;padding:12px 16px 12px 18px;border-bottom:1px solid var(--line);
+background:linear-gradient(180deg,rgba(63,198,255,.05),transparent);border-radius:0 6px 0 0}
+.pr-lab{font-family:"Blender";font-weight:700;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--a1)}
+.copy{margin-left:auto;display:inline-flex;align-items:center;gap:8px;background:transparent;border:1px solid var(--line2);color:var(--ink);
+font-family:"Blender";font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+padding:8px 14px 7px;border-radius:2px;cursor:pointer;transition:border-color .2s,color .2s,box-shadow .2s}
+.copy svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.copy .i-ok{display:none}
+.copy:hover{border-color:var(--a1);color:var(--a1);box-shadow:0 0 20px rgba(63,198,255,.25)}
+.copy.done{border-color:var(--a2);color:var(--a2)}
+.copy.done .i-ok{display:block}.copy.done .i-cp{display:none}
+.pr-body{margin:0;padding:18px 18px 20px;white-space:pre-wrap;word-break:break-word;color:#DDE2EE;
+font-family:ui-monospace,"Cascadia Mono",Consolas,Menlo,monospace;font-size:.86em;line-height:1.62;
+max-height:340px;overflow:auto;scrollbar-width:thin;scrollbar-color:var(--a1) #07080D}
+.pr-body::-webkit-scrollbar{width:9px}
+.pr-body::-webkit-scrollbar-track{background:#07080D}
+.pr-body::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--a1),var(--a2));border-radius:5px}
+
+/* настройки и подсказки */
+.note{display:flex;gap:14px;align-items:flex-start;border-radius:6px;padding:15px 18px;margin:16px 0 0;font-size:.95em}
+.note .ico{width:22px;height:22px;margin-top:2px}
+.note b{display:block;font-family:"Blender";font-weight:700;font-size:13px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:3px}
+.set{background:rgba(63,198,255,.05);border:1px solid rgba(63,198,255,.22)}
+.set b{color:var(--a1)}
+.tip{background:rgba(255,79,168,.05);border:1px solid rgba(255,79,168,.24)}
+.tip b{color:var(--a2)}
+.chips{display:flex;flex-wrap:wrap;align-items:center;gap:6px 4px}
+.chip{display:inline-block;padding:3px 10px;border:1px solid var(--line2);border-radius:3px;background:rgba(5,6,10,.5);white-space:nowrap}
+.sep{color:var(--dim);padding:0 2px}
+
+/* кадры во всю ширину, в родной пропорции */
+.shot{position:relative;margin:clamp(52px,7vw,110px) 0;
+--gut:clamp(16px,3.2vw,64px);width:calc(100vw - var(--gut)*2);margin-left:calc(50% - 50vw + var(--gut))}
+.shot-frame{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:16/9;background:var(--bg2);
+box-shadow:0 44px 100px rgba(0,0,0,.7),0 0 0 1px var(--line)}
+.shot-frame img{position:absolute;inset:0;width:100%;height:100%;display:block;will-change:transform}
+.shot-frame::after{content:"";position:absolute;inset:0;pointer-events:none;
+background:radial-gradient(ellipse 62% 70% at 0% 100%,rgba(5,6,10,.9),rgba(5,6,10,.55) 45%,transparent 72%)}
+.shot figcaption{position:absolute;left:0;bottom:0;z-index:2;padding:clamp(24px,3.6vw,60px);max-width:min(46%,640px);
+font-family:"Benzin";font-weight:700;text-transform:uppercase;font-size:clamp(18px,2.3vw,36px);line-height:1.12;
+text-shadow:0 4px 26px rgba(0,0,0,.9)}
+.shot .cap2{display:block;margin-top:8px;font-size:.62em;font-weight:600;line-height:1.25;color:#DDE2EE}
+.shot .k{display:block;font-family:"Blender";font-weight:700;font-size:13px;letter-spacing:.26em;
+color:var(--a1);margin-bottom:12px;text-shadow:none}
+@media(max-width:760px){
+.shot-frame::after{display:none}
+.shot figcaption{position:static;max-width:none;padding:18px 4px 0}
+}
+
+/* появление */
+[data-rv]{opacity:0;transform:translateY(34px) scale(.985);
+transition:opacity .75s cubic-bezier(.2,.7,.2,1),transform .75s cubic-bezier(.2,.7,.2,1)}
+[data-rv].in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}
+[data-rv]{opacity:1;transform:none;transition:none}
+.hero-img,.shot-frame img{transform:none!important}.aura{display:none}.cta{animation:none}}
+
+/* блок интенсива: вся карточка - одна ссылка-накладка */
+.cta{background:linear-gradient(155deg,var(--bg3),var(--bg2));border:1px solid var(--line2);border-radius:10px;
+padding:clamp(28px,4vw,58px);overflow:hidden;
+transition:border-color .3s,transform .3s;animation:glow 3s ease-in-out infinite}
+@keyframes glow{0%,100%{box-shadow:0 0 44px rgba(63,198,255,.10),0 30px 70px rgba(0,0,0,.5)}50%{box-shadow:0 0 90px rgba(255,79,168,.22),0 30px 70px rgba(0,0,0,.5)}}
+.cta:hover{border-color:var(--a1);transform:translateY(-4px)}
+.cta-hit{position:absolute;inset:0;z-index:5;display:block}
+.cta::before{content:"";position:absolute;right:-110px;top:-110px;width:340px;height:340px;pointer-events:none;
+background:radial-gradient(circle,rgba(63,198,255,.16),transparent 68%)}
+.cta::after{content:"";position:absolute;left:-110px;bottom:-110px;width:340px;height:340px;pointer-events:none;
+background:radial-gradient(circle,rgba(255,79,168,.15),transparent 68%)}
+.cta h2{margin:0;font-size:clamp(22px,3.1vw,44px)}
+.cta h2 span{background:linear-gradient(100deg,var(--a1),var(--a2));-webkit-background-clip:text;
+background-clip:text;color:transparent}
+.cta-cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(22px,3vw,50px);margin-top:32px}
+@media(max-width:760px){.cta-cols{grid-template-columns:1fr}}
+.cta-cols h4{font-family:"Blender";font-weight:700;font-size:13px;letter-spacing:.2em;text-transform:uppercase;
+color:var(--a1);margin:0 0 16px}
+.cta-cols ul{list-style:none;padding:0;margin:0}
+.cta-cols li{display:flex;gap:12px;align-items:flex-start;margin-bottom:13px;color:#C5CADA;font-size:.97em}
+.cta-cols li .ico{width:22px;height:22px;margin-top:1px}
+.cta-bottom{display:flex;align-items:center;gap:20px;margin-top:34px;flex-wrap:wrap;
+border-top:1px solid var(--line);padding-top:28px}
+.cta-bottom .free{font-family:"Blender";font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:16px;color:var(--dim)}
+.cta-bottom .free b{color:var(--a1)}
+.cta-btn{margin-left:auto;background:linear-gradient(100deg,var(--a1),var(--a2));color:#05060A;
+font-family:"Blender";font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;
+padding:16px 32px 15px;border-radius:3px;transition:transform .22s;display:inline-block}
+.cta:hover .cta-btn{transform:translateY(-2px) scale(1.03)}
+@media(max-width:560px){.cta-btn{margin-left:0;width:100%;text-align:center}}
+
+footer{border-top:1px solid var(--line);padding:44px 0 66px;position:relative;z-index:2}
+.f-in{display:flex;align-items:center;gap:14px 20px;flex-wrap:wrap}
+.f-in .tag{color:var(--dim);font-size:.92em}
+.f-in a{margin-left:auto;color:var(--a1);text-decoration:none;font-family:"Blender";font-weight:700;
+font-size:14px;letter-spacing:.14em;text-transform:uppercase}
+.f-in a:hover{color:var(--a2)}
+::selection{background:var(--a1);color:#05060A}
+</style>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=113751259', 'ym');
+
+    ym(113751259, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<!-- /Yandex.Metrika counter -->
+</head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<linearGradient id="g" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#3FC6FF"/><stop offset="1" stop-color="#FF4FA8"/></linearGradient>
+<symbol id="i-figure" viewBox="0 0 24 24"><rect x="2.5" y="6" width="8.5" height="11" rx="1.6"/><path d="M4.4 15l2.1-2.8 2.4 2.8"/><circle cx="8.3" cy="9.2" r=".9"/><path d="M12.6 11.5h2.6m-1.1-1.5 1.5 1.5-1.5 1.5"/><circle cx="19" cy="5.2" r="1.7"/><path d="M19 7.4v6.1M16.2 9.6l2.8-.9 2.8.9M17.3 20l1.7-6.5 1.7 6.5"/></symbol>
+<symbol id="i-brush" viewBox="0 0 24 24"><path d="M19.3 3.4a2.2 2.2 0 0 1 3.1 3.1L13 16l-3.1-3.1z"/><path d="M9.6 13.1c-2.4 0-4.3 1.7-4.3 4 0 1.5-.8 2.5-2.1 2.8 1.3 1 3.1 1.6 4.9 1.6 3.2 0 5.6-2.3 5.6-5.2"/><path d="M15.7 7.2l3.1 3.1"/></symbol>
+<symbol id="i-pad" viewBox="0 0 24 24"><path d="M6.6 7.5h10.8a4.1 4.1 0 0 1 4.1 4.4l-.4 4.5a2.7 2.7 0 0 1-4.8 1.4L14.9 16H9.1l-1.4 1.8a2.7 2.7 0 0 1-4.8-1.4l-.4-4.5a4.1 4.1 0 0 1 4.1-4.4z"/><path d="M7.6 10.4v3.4M5.9 12.1h3.4"/><circle cx="15.6" cy="11.2" r=".7"/><circle cx="17.6" cy="13.2" r=".7"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16a1.5 1.5 0 0 1 1.5 1.5v9A1.5 1.5 0 0 1 20 17H10l-5 4v-4H4a1.5 1.5 0 0 1-1.5-1.5v-9A1.5 1.5 0 0 1 4 5z"/><path d="M12 8v5M9.5 10.5h5"/></symbol>
+<symbol id="i-cube" viewBox="0 0 24 24"><path d="M12 2.8l8.2 4.7v9.4L12 21.6l-8.2-4.7V7.5z"/><path d="M3.8 7.5 12 12.2l8.2-4.7M12 12.2v9.4"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24"><path d="M8.5 7 3.5 12l5 5M15.5 7l5 5-5 5M13.6 4.5l-3.2 15"/></symbol>
+<symbol id="i-orbit" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.6"/><ellipse cx="12" cy="12" rx="9.6" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="20.2" cy="7.6" r=".8"/></symbol>
+<symbol id="i-post" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="2.2"/><path d="M7.5 8.5h9M7.5 12h9M7.5 15.5h5"/></symbol>
+<symbol id="i-yt" viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="3.6"/><path d="M10.2 9.4v5.2l4.4-2.6z"/></symbol>
+<symbol id="i-set" viewBox="0 0 24 24"><path d="M3.5 7h9.5M17.5 7h3M3.5 17h3.5M11.5 17h9"/><circle cx="15.2" cy="7" r="2.2"/><circle cx="9.2" cy="17" r="2.2"/></symbol>
+<symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18.2h6M10.2 21h3.6"/><path d="M12 3a6.2 6.2 0 0 0-3.7 11.2c.7.6 1.2 1.4 1.2 2.3h5c0-.9.5-1.7 1.2-2.3A6.2 6.2 0 0 0 12 3z"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.3"/><path d="M7.6 12.3l3 3 5.9-6.2"/></symbol>
+<symbol id="i-bag" viewBox="0 0 24 24"><path d="M9 3.3h6l-1.6 3.2h-2.8z"/><path d="M10.6 6.5C6.3 8.4 4.2 12.3 4.2 15.4c0 3.6 3.1 5.6 7.8 5.6s7.8-2 7.8-5.6c0-3.1-2.1-7-6.4-8.9"/><path d="M12 10.3v7.2M13.7 11.9c-.4-.6-1-.9-1.8-.9-.9 0-1.7.5-1.7 1.3 0 1.9 3.6 1 3.6 2.9 0 .8-.8 1.4-1.9 1.4-.8 0-1.5-.3-1.9-.9"/></symbol>
+<symbol id="i-rocket" viewBox="0 0 24 24"><path d="M14.3 4.6C16.9 3.3 19.5 3 20.9 3c0 1.4-.3 4-1.6 6.6l-5.6 5.6-4.9-4.9z"/><path d="M8.8 10.3 5.2 9.9 3 12.4l4 1.1M13.7 15.2l.4 3.6-2.5 2.2-1.1-4"/><circle cx="16" cy="8" r="1.4"/><path d="M6.6 17.4 3.8 20.2"/></symbol>
+</defs></svg>
+
+<div class="bar" id="bar"></div>
+<div class="aura" id="aura"></div>
+
+<nav><div class="wrap nav-in">
+<a class="brand" href="#top">Мастодонт</a>
+<div class="nav-links"><a href="#tools">Инструменты</a><a href="#steps">Шаги</a><a href="#links">Ссылки</a></div>
+</div></nav>
+
+<header class="hero" id="top">
+<div class="hero-frame"><img class="hero-img" id="heroimg" src="img/11-igra.jpg" width="2368" height="1776" alt="Матвей за аркадным автоматом, над ним неоновая надпись «ИГРОК 1»" fetchpriority="high"></div>
+<div class="hero-in">
+<span class="badge" data-rv>Материалы к уроку</span>
+<h1 data-rv>Как я добавил <br><em>себя в игру</em>:<span class="h1-sub">3D-персонаж из одной картинки (Claude + Tripo)</span></h1>
+<p class="sub" data-rv>Скелет, живые волосы и пальто. И игра, где он бегает и рубит монстров.</p>
+<a class="watch" data-rv href="https://youtu.be/gOQkMxcYdzE" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-yt"/></svg>Смотреть видео</a>
+</div></header>
+
+<section id="learn"><div class="wrap">
+<h2 data-rv>Что ты научишься делать</h2>
+<div class="cards">
+<div class="card" data-rv><svg class="ico" aria-hidden="true"><use href="#i-figure"/></svg><p>Из одной картинки получить 3D-персонажа со скелетом, живыми волосами и одеждой</p></div>
+<div class="card" data-rv><svg class="ico" aria-hidden="true"><use href="#i-brush"/></svg><p>Сделать модель и покраску в 8K в Tripo, не открывая Blender руками</p></div>
+<div class="card" data-rv><svg class="ico" aria-hidden="true"><use href="#i-pad"/></svg><p>Собрать с Claude игру, где твой персонаж бегает, прыгает и рубит монстров</p></div>
+</div></div></section>
+
+<section id="tools" style="padding-top:0"><div class="wrap">
+<h2 data-rv>Что понадобится</h2>
+<div class="tools">
+<a class="tool" data-rv href="https://claude.ai/" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg><span class="txt"><span class="nm">Claude</span><span class="host">claude.ai</span></span><svg class="go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 16.5l9-9M9 7.5h7.5V15"/></svg></a>
+<a class="tool" data-rv href="https://tripo.pxf.io/Gb52n2?p.invite_code=K6R0JJ" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-cube"/></svg><span class="txt"><span class="nm">Tripo 3D</span><span class="ds">500 бесплатных кредитов и минус 60% на первый месяц по ссылке</span></span><svg class="go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 16.5l9-9M9 7.5h7.5V15"/></svg></a>
+<a class="tool" data-rv href="https://github.com/nanocle/Charakuru" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-code"/></svg><span class="txt"><span class="nm">Charakuru</span><span class="host">github.com/nanocle/Charakuru</span></span><span class="pill free">бесплатно</span></a>
+<a class="tool" data-rv href="https://www.blender.org/" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-orbit"/></svg><span class="txt"><span class="nm">Blender</span><span class="host">blender.org</span></span><span class="pill free">бесплатно</span></a>
+</div></div></section>
+
+<section id="steps" style="padding-top:0"><div class="wrap">
+<h2 data-rv>Шаги</h2>
+
+<article class="step" data-rv><div class="num">01</div><div class="step-body">
+<h3>Ставим кит Charakuru и Blender</h3>
+<p class="lead">Кит - это приложение плюс инструкции для Claude. Дальше Claude сам ставит всё нужное в Blender.</p>
+<ul class="acts">
+<li>Зайди на GitHub кита, раздел Releases, и скачай архив кита. Нужен именно архив, а не «Source code»: там только документация</li>
+<li>Скачай и установи Blender с официального сайта. Открывать его руками не придётся</li>
+<li>Напиши Claude:</li>
+</ul>
+<div class="pr"><div class="pr-top"><span class="pr-lab">Промпт 1</span><button class="copy" type="button"><svg class="i-cp" viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/></svg><svg class="i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Скопировать</span></button></div><pre class="pr-body">я скачал кит Charakuru и Blender. кит лежит в H:\top111\charakuru. поставь в Blender VRM-аддон и Blender MCP, пропиши путь к Blender и запусти приложение кита</pre></div>
+<div class="note tip"><svg class="ico" aria-hidden="true"><use href="#i-bulb"/></svg><div><b>Подсказка</b>Путь к папке кита укажи свой. Приложение кита откроется в браузере само.</div></div>
+</div></article>
+
+<article class="step" data-rv><div class="num">02</div><div class="step-body">
+<h3>Восемь ракурсов из одной картинки</h3>
+<ul class="acts">
+<li>Загрузи в приложение кита картинку персонажа в полный рост, чтобы были видны причёска, одежда и обувь</li>
+<li>Нажми «Request images», потом «Copy prompt», и вставь задание в Claude как есть. Оно на японском, это нормально, общаться дальше можно по-русски</li>
+<li>Claude сделает голову и тело с четырёх сторон, 8 картинок, плюс три общих вида для пропорций</li>
+<li>Проверь руки: они должны быть разведены строго горизонтально, буквой Т. Если руки опущены, при ходьбе они потом лезут в одежду</li>
+<li>Нашёл косяк на картинке - скажи Claude. Пример:</li>
+</ul>
+<div class="pr"><div class="pr-top"><span class="pr-lab">Промпт 2</span><button class="copy" type="button"><svg class="i-cp" viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/></svg><svg class="i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Скопировать</span></button></div><pre class="pr-body">сзади на пальто забыл череп, переделай спину, смотри в рефах</pre></div>
+<ul class="acts">
+<li>Когда 8 из 8 готовы, нажми «Confirm images &amp; continue», «Copy prompt» и вставь задание в Claude</li>
+</ul>
+</div></article>
+
+<article class="step" data-rv><div class="num">03</div><div class="step-body">
+<h3>3D-модель в Tripo</h3>
+<ul class="acts">
+<li>Открой Tripo, режим Smart Mesh, модель P2.0</li>
+<li>Режим Multi-View: в слоты Front, Left, Right, Back положи голову с четырёх сторон и нажми Generate. Потом тело, отдельным заходом</li>
+<li>Каждую модель выгрузи: Export → FBX</li>
+<li>Напиши Claude:</li>
+</ul>
+<div class="pr"><div class="pr-top"><span class="pr-lab">Промпт 3</span><button class="copy" type="button"><svg class="i-cp" viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/></svg><svg class="i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Скопировать</span></button></div><pre class="pr-body">выгрузил модели из tripo, лежат в загрузках. забери их в кит</pre></div>
+<ul class="acts">
+<li>В приложении кита выбери голову и тело, нажми «Confirm meshes &amp; continue», «Copy prompt» и вставь задание в Claude</li>
+</ul>
+<div class="note set"><svg class="ico" aria-hidden="true"><use href="#i-set"/></svg><div><b>Настройки</b><span class="chips"><span class="chip">Smart Mesh</span><span class="sep"> · </span><span class="chip">P2.0</span><span class="sep"> · </span><span class="chip">Quad</span><span class="sep"> · </span><span class="chip">25 000</span></span></div></div>
+</div></article>
+
+<figure class="shot" data-par><div class="shot-frame"><img src="img/03-model-ne-personazh.jpg" width="2560" height="1440" alt="Модель - ещё не персонаж" loading="lazy"></div><figcaption><span class="k">Почему это сложно</span>Модель - ещё не персонаж</figcaption></figure>
+
+<article class="step" data-rv><div class="num">04</div><div class="step-body">
+<h3>Сегментация - отдельно волосы и одежда</h3>
+<p class="lead">Сегментация режет статую на части, чтобы волосы и одежда двигались отдельно.</p>
+<ul class="acts">
+<li>В Tripo открой Segment, загрузи голову из папки, которую дал Claude, и нажми Start Segmenting. Так же с телом</li>
+<li>Выгрузи результат: Export → FBX</li>
+<li>Напиши Claude:</li>
+</ul>
+<div class="pr"><div class="pr-top"><span class="pr-lab">Промпт 4</span><button class="copy" type="button"><svg class="i-cp" viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/></svg><svg class="i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Скопировать</span></button></div><pre class="pr-body">сегментацию головы и тела выгрузил, забирай</pre></div>
+<div class="note tip"><svg class="ico" aria-hidden="true"><use href="#i-bulb"/></svg><div><b>Подсказка</b>Грузи именно файлы от Claude, а не модели из библиотеки Tripo, иначе порежешь не ту голову.</div></div>
+</div></article>
+
+<article class="step" data-rv><div class="num">05</div><div class="step-body">
+<h3>Покраска каждой части в 8K</h3>
+<p class="lead">Claude режет модель на части (голова, волосы, верх, низ) и под каждую рисует две картинки, спереди и сзади. По ним Tripo и красит.</p>
+<ul class="acts">
+<li>В Tripo: Smart UV → загрузи часть → Save</li>
+<li>Texture → загрузи две её картинки, спереди и сзади → качество 8K или 4K → Generate Texture</li>
+<li>Повтори для всех четырёх частей</li>
+<li>Кит из коробки берёт только 4K. Если у тебя доступно 8K, попроси Claude поправить кит:</li>
+</ul>
+<div class="pr"><div class="pr-top"><span class="pr-lab">Промпт 5</span><button class="copy" type="button"><svg class="i-cp" viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/></svg><svg class="i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Скопировать</span></button></div><pre class="pr-body">8К намного лучше по качеству. можно сделать, чтобы скрипт кита не падал на 8К?</pre></div>
+<ul class="acts">
+<li>Выгрузи все четыре покрашенные части и напиши Claude:</li>
+</ul>
+<div class="pr"><div class="pr-top"><span class="pr-lab">Промпт 6</span><button class="copy" type="button"><svg class="i-cp" viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/></svg><svg class="i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Скопировать</span></button></div><pre class="pr-body">все 4 части покрасил и выгрузил, собирай персонажа</pre></div>
+<div class="note set"><svg class="ico" aria-hidden="true"><use href="#i-set"/></svg><div><b>Настройки</b><span class="chips"><span class="chip">Remove Lighting выключен</span><span class="sep"> · </span><span class="chip">PBR не включаем</span></span></div></div>
+<div class="note tip"><svg class="ico" aria-hidden="true"><use href="#i-bulb"/></svg><div><b>Подсказка</b>Во время предпросмотра модель не крути, иначе покраска ляжет неровно. При загрузке в Tripo ставь нули в углах поворота, иначе персонаж выйдет наклонённым.</div></div>
+</div></article>
+
+<article class="step" data-rv><div class="num">06</div><div class="step-body">
+<h3>Скелет и физика</h3>
+<ul class="acts">
+<li>В приложении кита (Model editor) посади голову на шею ползунками Scale и Position</li>
+<li>Нажми «Confirm proportions &amp; continue», «Copy prompt» и вставь задание в Claude</li>
+<li>В Tripo открой Rig: загрузи фигуру, которую подготовил Claude, углы поворота 0, 0, 0, тип Humanoid, нажми Rig и выгрузи FBX со скелетом</li>
+<li>Напиши Claude:</li>
+</ul>
+<div class="pr"><div class="pr-top"><span class="pr-lab">Промпт 7</span><button class="copy" type="button"><svg class="i-cp" viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/></svg><svg class="i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Скопировать</span></button></div><pre class="pr-body">скелет из tripo скачал, забирай</pre></div>
+<ul class="acts">
+<li>Claude сам гоняет Blender: привязывает модель к скелету и ставит физику на волосы и одежду</li>
+<li>Что-то двигается не так - скажи словами. Пример:</li>
+</ul>
+<div class="pr"><div class="pr-top"><span class="pr-lab">Промпт 8</span><button class="copy" type="button"><svg class="i-cp" viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/></svg><svg class="i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Скопировать</span></button></div><pre class="pr-body">руки проходят сквозь пальто внутри</pre></div>
+<ul class="acts">
+<li>Нажми Export VRM, впиши имя персонажа и автора. Готовый файл понимают игры и программы для виртуальных стримеров</li>
+</ul>
+</div></article>
+
+<article class="step" data-rv><div class="num">07</div><div class="step-body">
+<h3>Игра с тобой в главной роли</h3>
+<ul class="acts">
+<li>Положи файл персонажа avatar.vrm в новую папку и напиши Claude:</li>
+</ul>
+<div class="pr"><div class="pr-top"><span class="pr-lab">Промпт 9</span><button class="copy" type="button"><svg class="i-cp" viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/></svg><svg class="i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Скопировать</span></button></div><pre class="pr-body">сделай простую 3d-игру, которая открывается двойным кликом по index.html, без сервера и без установки
+
+в этой папке лежит avatar.vrm, это мой персонаж. он должен сразу появляться на острове, когда я открываю игру. страница с диска не может читать файлы рядом, поэтому упакуй avatar.vrm в avatar.js и грузи из него. перетаскиванием другого .vrm в окно можно сменить персонажа
+
+графика на максимум, как в genshin impact: аниме-стиль, яркое небо с облаками и солнцем, мягкие тени, свечение. остров с холмами и песчаным пляжем, вокруг море с бирюзовым мелководьем, бликами и пеной у берега, горы в дымке на горизонте. густая низкая трава из отдельных травинок, колышется от ветра и расступается вокруг персонажа, цветы, пара пушистых деревьев и камней, в воздухе летают искорки
+управление: wasd бег, пробел прыжок, персонаж поворачивается туда, куда бежит, камера едет за спиной, мышкой можно крутить камеру
+по острову разбросаны 10 золотых монеток, над каждой столб света, сверху счётчик, когда собрал все, пишет "победа"
+
+персонажа грузи через three.js и @pixiv/three-vrm с cdn, всё остальное рисуй кодом, без картинок и моделей с диска. анимацию бега и стойки сделай кодом через кости: руки и ноги качаются в такт, на прыжке поджимает ноги. физика волос и одежды из файла должна работать, чтобы волосы развевались на бегу</pre></div>
+<ul class="acts">
+<li>Поднимаем графику: приложи скриншот из Genshin Impact и напиши:</li>
+</ul>
+<div class="pr"><div class="pr-top"><span class="pr-lab">Промпт 10</span><button class="copy" type="button"><svg class="i-cp" viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/></svg><svg class="i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Скопировать</span></button></div><pre class="pr-body">как нам кратно поднять качество графики до уровня ааа-проекта, как на этом скриншоте из genshin impact: освещение, тени, чтобы человек увидел и у него челюсть отвисла. сначала составь план. загугли самые свежие приёмы на октябрь</pre></div>
+<ul class="acts">
+<li>Добавляем драки:</li>
+</ul>
+<div class="pr"><div class="pr-top"><span class="pr-lab">Промпт 11</span><button class="copy" type="button"><svg class="i-cp" viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/></svg><svg class="i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Скопировать</span></button></div><pre class="pr-body">найди нормальную анимацию персонажу: ходьба, бег, прыжок и драка. хочу, чтобы можно было драться с существами. оружие на выбор: кулаки, меч и топор, переключать в пиксельной менюшке. скачанные архивы проверь на вирусы</pre></div>
+<ul class="acts">
+<li>Делаем волосы живее:</li>
+</ul>
+<div class="pr"><div class="pr-top"><span class="pr-lab">Промпт 12</span><button class="copy" type="button"><svg class="i-cp" viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/></svg><svg class="i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Скопировать</span></button></div><pre class="pr-body">сделай физику волос выразительнее: в прыжке волосы поднимаются, шагом качаются слабо, на бегу сильнее, на спринте ещё сильнее</pre></div>
+</div></article>
+</div></section>
+
+<section id="links" style="padding-top:clamp(20px,3vw,40px)"><div class="wrap">
+<h2 data-rv>Все ссылки</h2>
+<div class="tools">
+<a class="tool" data-rv href="https://tripo.pxf.io/Gb52n2?p.invite_code=K6R0JJ" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-cube"/></svg><span class="txt"><span class="nm">Tripo 3D</span><span class="host">tripo.pxf.io/Gb52n2?p.invite_code=K6R0JJ</span></span><svg class="go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 16.5l9-9M9 7.5h7.5V15"/></svg></a>
+<a class="tool" data-rv href="https://github.com/nanocle/Charakuru" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-code"/></svg><span class="txt"><span class="nm">Charakuru</span><span class="host">github.com/nanocle/Charakuru</span></span><svg class="go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 16.5l9-9M9 7.5h7.5V15"/></svg></a>
+<a class="tool" data-rv href="https://www.blender.org/" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-orbit"/></svg><span class="txt"><span class="nm">Blender</span><span class="host">www.blender.org</span></span><svg class="go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 16.5l9-9M9 7.5h7.5V15"/></svg></a>
+<a class="tool" data-rv href="https://claude.ai/" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg><span class="txt"><span class="nm">Claude</span><span class="host">claude.ai</span></span><svg class="go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 16.5l9-9M9 7.5h7.5V15"/></svg></a>
+<a class="tool" data-rv href="https://x.com/Dstudio_ai/status/2107396576931197427" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-post"/></svg><span class="txt"><span class="nm">Оригинальный пост Nano, автора Charakuru</span><span class="host">x.com/Dstudio_ai/status/2107396576931197427</span></span><svg class="go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 16.5l9-9M9 7.5h7.5V15"/></svg></a>
+</div></div></section>
+
+<div class="wrap"><figure class="shot" data-par><div class="shot-frame"><img src="img/13-draka.jpg" width="1920" height="1080" alt="Кадр из нашей игры: персонаж с мечом против монстра" loading="lazy"></div><figcaption><span class="k">Кадр из нашей игры</span>Игру собрал Claude <span class="cap2">меч, топор и кувырок от удара</span></figcaption></figure></div>
+
+<section style="padding-top:0"><div class="wrap">
+<div class="cta" style="position:relative" data-rv>
+<a class="cta-hit" href="https://t.me/mastodont_aibot?start=mini_kurs" target="_blank" rel="noopener" aria-label="Забрать интенсив"></a>
+<h2>Первые <span>$2к</span> на ИИ - бесплатный интенсив</h2>
+<div class="cta-cols">
+<div><h4>Внутри</h4><ul>
+<li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span>Реальное демо на Claude вживую</span></li>
+<li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span>Софт, который за 5 минут находит компании без сайтов с готовыми контактами</span></li>
+<li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span>Кейсы учеников: $1650 за 3 проекта без команды</span></li>
+</ul></div>
+<div><h4>Два бонуса в конце</h4><ul>
+<li><svg class="ico" aria-hidden="true"><use href="#i-bag"/></svg><span>50 скучных и самых прибыльных ниш без конкуренции</span></li>
+<li><svg class="ico" aria-hidden="true"><use href="#i-rocket"/></svg><span>Чек-лист: первые $500 за 7 дней</span></li>
+</ul></div>
+</div>
+<div class="cta-bottom">
+<span class="free"><b>Бесплатно.</b> Навсегда.</span>
+<span class="cta-btn">Забрать интенсив</span>
+</div>
+</div>
+</div></section>
+
+<footer><div class="wrap f-in">
+<span class="brand">Мастодонт</span>
+<span class="tag">AI и нейросети - просто, по делу</span>
+<a href="https://youtu.be/gOQkMxcYdzE" target="_blank" rel="noopener">Смотреть на YouTube</a>
+</div></footer>
+
+<script>
+(function(){
+var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* появление: в шапке выезд остаётся; всё, что ниже шапки и видно сразу, выезжает само через 420 мс */
+var io=new IntersectionObserver(function(es){
+  es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}});
+},{threshold:.12,rootMargin:"0px 0px -8% 0px"});
+document.querySelectorAll("[data-rv]").forEach(function(el,i){
+  if(reduce){el.classList.add("in");return}
+  var inHero=!!el.closest(".hero");
+  if(!inHero && el.getBoundingClientRect().top < innerHeight*1.05){
+    setTimeout(function(){el.classList.add("in")},420+(i%6)*90);
+    return;
+  }
+  el.style.transitionDelay=(i%6*70)+"ms";io.observe(el);
+});
+
+/* прогресс чтения + параллакс шапки и кадров */
+var bar=document.getElementById("bar"),hero=document.getElementById("heroimg");
+var shots=[].slice.call(document.querySelectorAll(".shot-frame img"));
+var ticking=false;
+function frame(){
+  ticking=false;
+  var y=scrollY,h=document.documentElement.scrollHeight-innerHeight;
+  bar.style.width=(h>0?Math.min(y/h,1)*100:0)+"%";
+  if(reduce)return;
+  if(hero && y<innerHeight*1.4)hero.style.transform="translate3d(0,"+(y*.06).toFixed(1)+"px,0)";
+  shots.forEach(function(im){
+    var r=im.parentElement.getBoundingClientRect();
+    if(r.bottom<0||r.top>innerHeight)return;
+    var p=(r.top+r.height/2-innerHeight/2)/innerHeight;
+    p=Math.max(-1,Math.min(1,p));
+    var t=p*-18;
+    /* в центре экрана сдвиг 0 и масштаб 1 - кадр целиком; на краях чуть приближаем, чтобы не открыть щель */
+    var s=1+Math.abs(t)*2/r.height;
+    im.style.transform="translate3d(0,"+t.toFixed(1)+"px,0) scale("+s.toFixed(4)+")";
+  });
+}
+function req(){if(!ticking){ticking=true;requestAnimationFrame(frame)}}
+addEventListener("scroll",req,{passive:true});
+addEventListener("resize",req);
+frame();
+
+/* свет за курсором */
+var aura=document.getElementById("aura");
+if(!reduce)addEventListener("pointermove",function(e){
+  aura.style.left=e.clientX+"px";aura.style.top=e.clientY+"px";
+},{passive:true});
+
+/* наклон карточек */
+if(!reduce)document.querySelectorAll(".card").forEach(function(c){
+  c.addEventListener("pointermove",function(e){
+    var r=c.getBoundingClientRect();
+    var x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+    c.style.transform="rotateY("+(x*7).toFixed(2)+"deg) rotateX("+(-y*7).toFixed(2)+"deg) translateZ(14px)";
+  });
+  c.addEventListener("pointerleave",function(){c.style.transform=""});
+});
+
+/* копирование промптов */
+function fallbackCopy(t){
+  var ta=document.createElement("textarea");ta.value=t;ta.setAttribute("readonly","");
+  ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();
+  var ok=false;try{ok=document.execCommand("copy")}catch(e){}
+  document.body.removeChild(ta);return ok?Promise.resolve():Promise.reject();
+}
+document.querySelectorAll(".copy").forEach(function(b){
+  b.addEventListener("click",function(){
+    var t=b.closest(".pr").querySelector(".pr-body").textContent;
+    var p=(navigator.clipboard&&window.isSecureContext)?navigator.clipboard.writeText(t).catch(function(){return fallbackCopy(t)}):fallbackCopy(t);
+    p.then(function(){
+      var s=b.querySelector("span");s.textContent="Скопировано!";b.classList.add("done");
+      clearTimeout(b._t);b._t=setTimeout(function(){s.textContent="Скопировать";b.classList.remove("done")},2000);
+    });
+  });
+});
+})();
+</script>
+</body></html>
